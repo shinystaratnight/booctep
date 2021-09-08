@@ -1,0 +1,6 @@
+.DS_Store
+/__pycache__/
+*.pyc
+booctop/static/user_images/
+booctop/static/video
+booctop/static/uploads
