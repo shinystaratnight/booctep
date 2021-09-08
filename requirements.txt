@@ -1,5 +1,8 @@
-pip install django-social-share
-pip install textblob
-pip install django-paypal
-pip install image
-pip install img2pdf
+Django==3.2.6
+django-paypal==1.1.1
+django-social-share==2.2.1
+image==1.5.33
+img2pdf==0.4.1
+PyMySQL==1.0.2
+social-auth-app-django==5.0.0
+PyVimeo==1.1.0
