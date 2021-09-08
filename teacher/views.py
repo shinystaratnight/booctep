@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from teacher.models import categories, Courses, VideoUploads, Sections, questions, TestVideo, student_mark, answers, subcategories
+from teacher.models import categories, Courses, VideoUploads, Sections, questions, TestVideo, student_mark, answers, \
+    subcategories
 from home.models import User, user_profile, notifications, Admincontrol, Messages, Card
 from student.models import student_register_courses, course_comments
 from discount.models import *
@@ -15,6 +16,8 @@ from django.conf import settings
 from django.db.models import Q
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import vimeo
+
 
 def getRatingFunc(rating_list):
     sum = 0
@@ -28,6 +31,7 @@ def getRatingFunc(rating_list):
         _rating = sum / count
     return round(_rating, 1)
 
+
 def teacher_account(request):
     if request.session.get('user_id') == None:
         return redirect('/')
@@ -37,7 +41,8 @@ def teacher_account(request):
     if user_profile.objects.filter(user_id=request.user.id).exists():
         profile = user_profile.objects.get(user_id=request.user.id)
 
-    return render(request, 'teacher/account.html', {'objC': objC, 'profile': profile, 'sub_categories': sub_categories, 'lang': getLanguage(request)[0]})
+    return render(request, 'teacher/account.html',
+                  {'objC': objC, 'profile': profile, 'sub_categories': sub_categories, 'lang': getLanguage(request)[0]})
 
 
 def teacher_security(request):
@@ -74,6 +79,7 @@ def teacher_notifications1(request):
                   {'lang': getLanguage(request)[0], 'noti_list': noti_list, 'course_list': course_list,
                    'student_list': student_list})
 
+
 def teacher_notifications(request):
     if request.session.get('user_id') == None:
         return redirect('/')
@@ -82,9 +88,11 @@ def teacher_notifications(request):
     total_noti_list = []
     for ele in id_list:
         if notifications.objects.filter(Q(sender_id=id) & Q(type=0) & Q(course_id=ele['course_id'])).exists():
-            time_list = notifications.objects.filter(Q(sender_id=id) & Q(type=0) & Q(course_id=ele['course_id'])).values('created_at').distinct()
+            time_list = notifications.objects.filter(
+                Q(sender_id=id) & Q(type=0) & Q(course_id=ele['course_id'])).values('created_at').distinct()
             for time in time_list:
-                noti = notifications.objects.filter(Q(sender_id=id) & Q(type=0) & Q(course_id=ele['course_id']) & Q(created_at=time['created_at']))[0]
+                noti = notifications.objects.filter(
+                    Q(sender_id=id) & Q(type=0) & Q(course_id=ele['course_id']) & Q(created_at=time['created_at']))[0]
                 course = Courses.objects.get(pk=noti.course_id)
                 noti.course_name = course.name
                 total_noti_list.append(noti)
@@ -101,6 +109,7 @@ def teacher_notifications(request):
 
     return render(request, 'teacher/notifications.html',
                   {'lang': getLanguage(request)[0], 'noti_list': total_noti_list, 'course_list': total_course_list})
+
 
 def teacher_payments(request):
     if request.session.get('user_id') == None:
@@ -122,19 +131,21 @@ def dashboard(request):
     # price logic..
     totalPrice = 0
 
-    #get total student for free course
+    # get total student for free course
     free_course_list = Courses.objects.filter(user_id=user_id, type=1).values_list('id', flat=True)
     free_course_list = map(str, free_course_list)
     free_course_id_str = ','.join(free_course_list)
-    totalFreeStuCnt = student_register_courses.objects.extra(where=['find_in_set(course_id_id, "'+ free_course_id_str +'")']).count()
+    totalFreeStuCnt = student_register_courses.objects.extra(
+        where=['find_in_set(course_id_id, "' + free_course_id_str + '")']).count()
 
-    #get total student for paid course
+    # get total student for paid course
     paid_course_list = Courses.objects.filter(user_id=user_id, type=0).values_list('id', flat=True)
     paid_course_list = map(str, paid_course_list)
     paid_course_id_str = ','.join(paid_course_list)
-    totalPaidStuCnt = student_register_courses.objects.extra(where=['find_in_set(course_id_id, "' + paid_course_id_str + '")']).count()
+    totalPaidStuCnt = student_register_courses.objects.extra(
+        where=['find_in_set(course_id_id, "' + paid_course_id_str + '")']).count()
 
-    #get total rating of the courses
+    # get total rating of the courses
     course_list = Courses.objects.filter(user_id=user_id)
     sum = 0
     cnt = 0
@@ -148,7 +159,7 @@ def dashboard(request):
     else:
         total_rating = round(sum / cnt, 1)
 
-    #get total revenue
+    # get total revenue
     total_revenue = 0
     course_list = Courses.objects.filter(user_id=user_id, type=0)
     total_hold_money = 0
@@ -214,8 +225,10 @@ def dashboard(request):
     # else:
     #     totalRate = round(rateSum / rateCnt, 2)
     return render(request, 'teacher/dashboard.html',
-                  {'lang': getLanguage(request)[0], 'courses': course_list, 'total_rating': total_rating, 'total_revenue': total_revenue,
-                   'totalFreeStuCnt': totalFreeStuCnt, 'totalPaidStuCnt': totalPaidStuCnt, 'totalPrice': totalPrice, 'teacher_tax': teacher_tax,
+                  {'lang': getLanguage(request)[0], 'courses': course_list, 'total_rating': total_rating,
+                   'total_revenue': total_revenue,
+                   'totalFreeStuCnt': totalFreeStuCnt, 'totalPaidStuCnt': totalPaidStuCnt, 'totalPrice': totalPrice,
+                   'teacher_tax': teacher_tax,
                    'total_hold_money': total_hold_money, 'total_transfer_money': total_transfer_money})
 
 
@@ -298,10 +311,11 @@ def course_engagement(request):
         reviewList = ''
     return render(request, 'teacher/course-engagement.html',
                   {'lang': getLanguage(request)[0], 'courses': courses, 'course': course, 'reviewList': reviewList,
-                   'cur_course_id': cur_course_id, 'page': page, 'coupon': coupon })
+                   'cur_course_id': cur_course_id, 'page': page, 'coupon': coupon})
+
 
 def transactions(request):
-    return render(request, 'teacher/transactions.html', {})
+    return render(request, 'teacher/transactions.html', {'lang': getLanguage(request)[0]})
 
 
 def payout(request):
@@ -309,7 +323,7 @@ def payout(request):
     card = []
     if Card.objects.filter(user_id=user_id).exists():
         card = Card.objects.get(user_id=user_id)
-    return render(request, 'teacher/payout.html', {'card': card})
+    return render(request, 'teacher/payout.html', {'lang': getLanguage(request)[0], 'card': card})
 
 
 def addtofeedback(request):
@@ -364,10 +378,12 @@ def teacher_messages(request):
         for i in courseList:
             print("ets:::", i['course_id'])
             course = Courses.objects.get(pk=i['course_id'])
-            userList = Messages.objects.filter(receiver_id=user_id, course_id=i['course_id']).filter(delete_id=0).values(
+            userList = Messages.objects.filter(receiver_id=user_id, course_id=i['course_id']).filter(
+                delete_id=0).values(
                 'sender_id').distinct()
             for ele in userList:
-                unread = Messages.objects.filter(receiver_id=user_id, sender_id=ele['sender_id'], course_id=i['course_id'], is_read=0)
+                unread = Messages.objects.filter(receiver_id=user_id, sender_id=ele['sender_id'],
+                                                 course_id=i['course_id'], is_read=0)
                 user = User.objects.get(pk=ele['sender_id'])
                 student_dict['course_name'] = course.name
                 student_dict['course_id'] = course.id
@@ -619,30 +635,37 @@ def nocourse(request):
         return redirect('/')
     return render(request, 'teacher/no-course.html', {'lang': getLanguage(request)[0]})
 
+
 def get_teacher_CourseList(request):
     user_id = request.session.get("user_id")
     course_list = Courses.objects.filter(user_id=user_id).filter(approval_status=2)
     return course_list
+
+
 def get_teacher_CourseList_dashboard(request):
     user_id = request.session.get("user_id")
     course_list = Courses.objects.filter(user_id=user_id).all()
     return course_list
 
+
 def getAllCourseList():
     course_list = Courses.objects.filter(approval_status=2)
     return course_list
+
 
 def getPaidCourseList():
     course_list = Courses.objects.filter(type=0, approval_status=2)
     return course_list
 
+
 def getFreeCourseList():
     course_list = Courses.objects.filter(type=1, approval_status=2)
     return course_list
 
+
 # store course in DB
 def store_course(request):
-    # course = Courses.objects.get(pk=course_id)    
+    # course = Courses.objects.get(pk=course_id)
     id = request.POST.get('id')
     name = request.POST.get('name')
     description = request.POST.get('description')
@@ -691,8 +714,8 @@ def store_course(request):
         fd.close()
     nameList = name.split(" ")
     courseUrl = '_'.join(nameList)
-    print(courseUrl)    
-    
+    print(courseUrl)
+
     if id == '':  # add case
         objCourse = Courses(
             name=name,
@@ -942,21 +965,40 @@ def store_course_2(request):
                         video_key = item['key']
                         print("file exist::", files.get(video_key))
                         if files.get(video_key) == None:
-                            continue;
+                            continue
                         else:
                             video = files[video_key]
                             filename = video._get_name()
                             ext = filename[filename.rfind('.'):]
                             file_name = str(uuid.uuid4()) + ext
-                            path = '/uploads/courses/videos/'
-                            full_path = str(path) + str(file_name)
-                            print("store course", full_path)
-                            print("store course1", (settings.STATICFILES_DIRS[0], str(path) + str(file_name)))
-                            fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
 
-                            for chunk in video.chunks():
-                                fd.write(chunk)
-                            fd.close()
+                            ## Uploading videos into Vimeo space instead of server
+                            VIMEO_TOKEN = settings.VIMEO_TOKEN
+                            VIMEO_KEY = settings.VIMEO_KEY
+                            VIMEO_SECRET = settings.VIMEO_SECRET
+
+                            client = vimeo.VimeoClient(
+                                token=VIMEO_TOKEN,
+                                key=VIMEO_KEY,
+                                secret=VIMEO_SECRET
+                            )
+                            uri = client.upload(filename, data={
+                                'name': file_name,
+                                'description': 'description: ' + file_name
+                            })
+
+                            response = client.get(uri + '?fields=link').json()
+                            full_path = response['link']
+
+                            # path = '/uploads/courses/videos/'
+                            # full_path = str(path) + str(file_name)
+                            # print("store course", full_path)
+                            # print("store course1", (settings.STATICFILES_DIRS[0], str(path) + str(file_name)))
+                            # fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
+                            #
+                            # for chunk in video.chunks():
+                            #     fd.write(chunk)
+                            # fd.close()
 
                             ## store video in DB
                             objVideo = VideoUploads(
@@ -1196,19 +1238,23 @@ def get_courseDetails(course_id):
         'promo_video': promo_video
     }
 
+
 ur = ""
+
+
 def getLanguage(request):
     global ur;
     path = request.path
     ur = path
     prev = request.META.get('HTTP_REFERER')
     language = path.split('/')[1]
- 
+
     if language == "ar":
         language = language + '/'
     else:
         language = ""
     return language, prev, path
+
 
 def getVideoList(course):
     ssss = Sections.objects.filter(course_id=course.id).values_list("id", flat=True)

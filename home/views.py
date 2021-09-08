@@ -3,7 +3,8 @@ from django.urls import reverse
 from operator import attrgetter
 from home.models import *
 from teacher.models import categories, subcategories, Courses, Sections, VideoUploads
-from student.models import student_register_courses, course_comments, student_cart_courses, student_favourite_courses, payment
+from student.models import student_register_courses, course_comments, student_cart_courses, student_favourite_courses, \
+    payment
 from discount.models import discount
 from teacher.views import getAllCourseList, get_courseDetails, getLanguage, getPaidCourseList, getFreeCourseList
 from django.template.loader import render_to_string
@@ -63,6 +64,7 @@ from django.utils import translation
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'booctop.settings'
 application = get_wsgi_application()
+
 
 # def forgetme(request):
 #     if request.method == 'POST':
@@ -151,7 +153,8 @@ def home_view(request):
     ele = Admincontrol.objects.get(pk=1)
     cat_id = int(ele.priority)
 
-    favListShow, favCnt, alreadyinFavView, cartListShow, cartCnt, alreadyinCartView, cartTotalSum, noti_list, noti_cnt, msg_list, msg_cnt = findheader(request.user.id)
+    favListShow, favCnt, alreadyinFavView, cartListShow, cartCnt, alreadyinCartView, cartTotalSum, noti_list, noti_cnt, msg_list, msg_cnt = findheader(
+        request.user.id)
 
     course_list_paginator = Paginator(course_list, 10)
     try:
@@ -173,7 +176,7 @@ def home_view(request):
         if count == 0:
             cur_rating = 0
         else:
-            cur_rating = (sum/count)
+            cur_rating = (sum / count)
         course.student_num = len(student_register_courses.objects.filter(course_id_id=course.id))
         if cur_rating < 4.8:
             flag = 0
@@ -208,9 +211,10 @@ def home_view(request):
                           {'course_list': course_list, 'page': page, 'type': type,
                            'lang': getLanguage(request)[0], "user_id": user_id, "category_obj": category_obj,
                            'favList': favListShow, 'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
-                           'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                           'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
+                           'msg_list': msg_list, 'msg_cnt': msg_cnt,
                            'stu_courses': stu_courses, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
-                           'noti_list': noti_list, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                           'noti_list': noti_list, 'cat_id': cat_id, 'ip': ip, 'order': order})
         else:
             if user_id:
                 return render(request, 'index.html', {'course_list': course_list, 'page': page, 'type': type,
@@ -218,15 +222,19 @@ def home_view(request):
                                                       "user_id": user_id, 'favList': favListShow,
                                                       'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                                       'alreadyinCart': alreadyinCartView, 'favCnt': favCnt,
-                                                      'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                                      'noti_cnt': noti_cnt, 'noti_list': noti_list, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                                      'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum,
+                                                      'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                                      'noti_cnt': noti_cnt, 'noti_list': noti_list, 'cat_id': cat_id,
+                                                      'ip': ip, 'order': order})
             else:
                 return render(request, 'index.html', {'course_list': course_list, 'page': page, 'type': type,
                                                       'lang': getLanguage(request)[0], "category_obj": category_obj,
                                                       'favList': favListShow, 'cartList': cartListShow,
                                                       'favCnt': favCnt, 'cartCnt': cartCnt,
-                                                      'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                                      'noti_list': noti_list, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                                      'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                                      'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                                      'noti_list': noti_list, 'cat_id': cat_id, 'ip': ip,
+                                                      'order': order})
     else:
         ur = getLanguage(request)[1].split('/')
         print("language test:", ur)
@@ -249,23 +257,29 @@ def home_view(request):
                                "category_obj": category_obj, "user_id": user_id, "category_obj": category_obj,
                                'favList': favListShow, 'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                               'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                               'cat_id': cat_id, 'ip':ip, 'order': order})
+                               'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                               'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                               'cat_id': cat_id, 'ip': ip, 'order': order})
             else:
                 if user_id:
                     return render(request, 'index.html',
-                                {'course_list': course_list, 'page': page, 'type': type, 'lang': getLanguage(request)[0],
-                                "category_obj": category_obj, "user_id": user_id, 'favList': favListShow,
-                                'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
-                                'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                'cat_id': cat_id, 'ip':ip, 'order': order})
+                                  {'course_list': course_list, 'page': page, 'type': type,
+                                   'lang': getLanguage(request)[0],
+                                   "category_obj": category_obj, "user_id": user_id, 'favList': favListShow,
+                                   'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
+                                   'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
+                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                   'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                   'cat_id': cat_id, 'ip': ip, 'order': order})
                 else:
                     return render(request, 'index.html',
-                                {'course_list': course_list, 'page': page, 'type': type, 'lang': getLanguage(request)[0],
-                                "category_obj": category_obj, 'favList': favListShow, 'cartList': cartListShow,
-                                'favCnt': favCnt, 'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                'noti_cnt': noti_cnt, 'noti_list': noti_list, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                  {'course_list': course_list, 'page': page, 'type': type,
+                                   'lang': getLanguage(request)[0],
+                                   "category_obj": category_obj, 'favList': favListShow, 'cartList': cartListShow,
+                                   'favCnt': favCnt, 'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum,
+                                   'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                   'noti_cnt': noti_cnt, 'noti_list': noti_list, 'cat_id': cat_id, 'ip': ip,
+                                   'order': order})
         else:
             li = getLanguage(request)[0].split('/')
             if len(ur) == 7:
@@ -282,24 +296,29 @@ def home_view(request):
                                        "user_id": user_id, "category_obj": category_obj, 'favList': favListShow,
                                        'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                        'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                       'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                       'stu_courses': stu_courses, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                       'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                       'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                       'stu_courses': stu_courses, 'cat_id': cat_id, 'ip': ip, 'order': order})
                     else:
                         if user_id:
                             return render(request, 'index.html',
-                                          {'course_list': course_list, 'page': page, 'type': type, 'lang': getLanguage(request)[0],
+                                          {'course_list': course_list, 'page': page, 'type': type,
+                                           'lang': getLanguage(request)[0],
                                            "category_obj": category_obj, "user_id": user_id, 'favList': favListShow,
                                            'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                            'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                           'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                           'cat_id': cat_id, 'ip':ip, 'order': order})
+                                           'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                           'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                           'cat_id': cat_id, 'ip': ip, 'order': order})
                         else:
                             return render(request, 'index.html',
-                                          {'course_list': course_list, 'page': page, 'type': type, 'lang': getLanguage(request)[0],
+                                          {'course_list': course_list, 'page': page, 'type': type,
+                                           'lang': getLanguage(request)[0],
                                            "category_obj": category_obj, 'favList': favListShow,
                                            'cartList': cartListShow, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                           'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                           'cat_id': cat_id, 'ip':ip, 'order': order})
+                                           'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                           'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                           'cat_id': cat_id, 'ip': ip, 'order': order})
                 else:
                     return redirect(u)
             else:
@@ -315,29 +334,32 @@ def home_view(request):
                                    'lang': getLanguage(request)[0], "category_obj": category_obj,
                                    "user_id": user_id, 'favList': favListShow, 'alreadyinFav': alreadyinFavView,
                                    'cartList': cartListShow, 'alreadyinCart': alreadyinCartView, 'favCnt': favCnt,
-                                   'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                   'noti_list': noti_list, 'stu_courses': stu_courses, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                   'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                   'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                   'noti_list': noti_list, 'stu_courses': stu_courses, 'cat_id': cat_id, 'ip': ip,
+                                   'order': order})
                 else:
                     if user_id:
                         return render(request, 'index.html',
-                                      {'course_list': course_list, 'page': page, 'type': type,'lang': getLanguage(request)[0],
+                                      {'course_list': course_list, 'page': page, 'type': type,
+                                       'lang': getLanguage(request)[0],
                                        "category_obj": category_obj, 'favList': favListShow,
                                        'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                        'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                       'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                       'cat_id': cat_id, 'ip':ip, 'order': order})
+                                       'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                       'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                       'cat_id': cat_id, 'ip': ip, 'order': order})
                     else:
                         return render(request, 'index.html',
-                                      {'course_list': course_list, 'page': page, 'type': type, 'lang': getLanguage(request)[0],
+                                      {'course_list': course_list, 'page': page, 'type': type,
+                                       'lang': getLanguage(request)[0],
                                        "category_obj": category_obj, 'favList': favListShow,
                                        'cartList': cartListShow, "user_id": user_id, 'favCnt': favCnt,
-                                       'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                                       'noti_list': noti_list, 'cat_id': cat_id, 'ip':ip, 'order': order})
+                                       'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                       'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                       'noti_list': noti_list, 'cat_id': cat_id, 'ip': ip, 'order': order})
                 # else:
                 #     return redirect(u)
-
-
-
 
 
 def home_view1(request):
@@ -363,9 +385,9 @@ def home_view1(request):
             enrolled_course_list.append(enrolled_course_list_query[value]['course_id_id'])
         enrolled_course_list = map(str, enrolled_course_list)
         enrolled_ids = ','.join(enrolled_course_list)
-        course_list = Courses.objects.extra(where=['find_in_set(id, "'+ enrolled_ids +'")'])
-        course_free_list = Courses.objects.extra(where=['find_in_set(id, "'+ enrolled_ids +'")']).filter(type=1)
-        course_paid_list = Courses.objects.extra(where=['find_in_set(id, "'+ enrolled_ids +'")']).filter(type=0)
+        course_list = Courses.objects.extra(where=['find_in_set(id, "' + enrolled_ids + '")'])
+        course_free_list = Courses.objects.extra(where=['find_in_set(id, "' + enrolled_ids + '")']).filter(type=1)
+        course_paid_list = Courses.objects.extra(where=['find_in_set(id, "' + enrolled_ids + '")']).filter(type=0)
         print("enrolled::", course_list)
     elif user_type == "teacher":
         teachers_courses = get_teacher_CourseList(request)
@@ -618,6 +640,7 @@ def home_view1(request):
                 else:
                     return redirect(u)
 
+
 def findheader(userid):
     # show fav page.., cart page...
     favList = student_favourite_courses.objects.filter(student_id_id=userid)
@@ -657,7 +680,7 @@ def findheader(userid):
 def signup(request):
     objC = categories.objects.all()
     cat_list = []
-    for cat in objC:        
+    for cat in objC:
         item = {'name': cat.name, 'namear': cat.namear, 'id': cat.id}
         cat_list.append(item)
     print(cat_list)
@@ -672,13 +695,16 @@ def about(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
     return render(request, 'about.html',
                   {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def faqs(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
-    return render(request, 'faqs.html', {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+    return render(request, 'faqs.html',
+                  {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def help(request):
@@ -687,29 +713,34 @@ def help(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
 
     return render(request, 'support.html',
-                  {'lang': getLanguage(request)[0], 'user_type': user_type, "user_id": user_id, 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                  {'lang': getLanguage(request)[0], 'user_type': user_type, "user_id": user_id, 'favList': x1,
+                   'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def terms(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
     return render(request, 'terms.html',
                   {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def policy(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
     return render(request, 'privacy.html',
                   {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def contact(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
     return render(request, 'contact.html',
                   {'lang': getLanguage(request)[0], 'favList': x1, 'favCnt': x2, 'alreadyinFav': x3, 'cartList': y1,
-                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                   'cartCnt': y2, 'alreadyinCart': y3, 'cartTotalSum': y4, 'noti_list': z1, 'noti_cnt': z2,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
 
 def become(request):
@@ -732,7 +763,7 @@ def become(request):
 
 def become_a_teacher(request):
     categoryList = categories.objects.all()
-    return render(request, 'become-teacher.html', {'lang': getLanguage(request)[0],'categories': categoryList})
+    return render(request, 'become-teacher.html', {'lang': getLanguage(request)[0], 'categories': categoryList})
 
 
 def save_become_teacher(request):
@@ -760,12 +791,14 @@ def getMessageHistory(request):
     messages = Messages.objects.filter(
         Q(sender_id=sender_id, receiver_id=receiver_id) | Q(sender_id=receiver_id, receiver_id=sender_id)).filter(
         course_id=course_id).filter(~Q(delete_id=receiver_id))
-    Messages.objects.filter(Q(sender_id=sender_id, receiver_id=receiver_id)).filter(course_id=course_id).update(is_read=1)
+    Messages.objects.filter(Q(sender_id=sender_id, receiver_id=receiver_id)).filter(course_id=course_id).update(
+        is_read=1)
 
     ret = {
         'messages': serializers.serialize('json', messages),
     }
     return JsonResponse(ret)
+
 
 def deleteMessageHistory(request):
     sender_id = request.POST.get('sender_id')
@@ -789,19 +822,34 @@ def deleteMessageHistory(request):
     }
     return JsonResponse(ret)
 
+
 def setMessageRead(request):
     sender_id = request.POST.get('sender_id')
     receiver_id = request.POST.get('receiver_id')
     course_id = request.POST.get('course_id')
     status = 1
     try:
-        Messages.objects.filter(sender_id=sender_id,receiver_id=receiver_id,course_id=course_id).update(is_read=1)
+        Messages.objects.filter(sender_id=sender_id, receiver_id=receiver_id, course_id=course_id).update(is_read=1)
     except:
         status = 0
     ret = {
         'status': status
     }
     return JsonResponse(ret)
+
+
+def setMessageReadById(request):
+    id = request.POST.get('id')
+    status = 1
+    try:
+        Messages.objects.filter(id=id).update(is_read=1)
+    except:
+        status = 0
+    ret = {
+        'status': status
+    }
+    return JsonResponse(ret)
+
 
 def getUserById(request):
     id = request.POST.get('id')
@@ -811,7 +859,8 @@ def getUserById(request):
     }
     return JsonResponse(ret)
 
-#delete in student's part
+
+# delete in student's part
 def deleteNotificationById(request):
     id = request.POST.get('id')
     status = 1
@@ -824,7 +873,22 @@ def deleteNotificationById(request):
     }
     return JsonResponse(ret)
 
-#delete in teacher's part
+
+# mark notification as read by id in header
+def setNotificationReadById(request):
+    id = request.POST.get('id')
+    status = 1
+    try:
+        notifications.objects.filter(id=id).update(is_read=1)
+    except:
+        status = 0
+    ret = {
+        'status': status
+    }
+    return JsonResponse(ret)
+
+
+# delete in teacher's part
 def deleteNotification(request):
     course_id = request.POST.get('course_id')
     time = request.POST.get('time')
@@ -839,6 +903,7 @@ def deleteNotification(request):
         'status': status
     }
     return JsonResponse(ret)
+
 
 def editNotification(request):
     id = request.POST.get('id')
@@ -856,6 +921,7 @@ def editNotification(request):
         'status': status
     }
     return JsonResponse(ret)
+
 
 @csrf_exempt
 def reportSpam(request):
@@ -882,6 +948,7 @@ def reportSpam(request):
         'status': status
     }
     return JsonResponse(ret)
+
 
 @csrf_exempt
 def refund(request):
@@ -912,11 +979,13 @@ def refund(request):
     }
     return JsonResponse(ret)
 
+
 def courseUrlGenerator(course):
     name = course.course_url
     teacher_id = course.user_id
     courselink = str(teacher_id) + "/" + str(name)
     return courselink
+
 
 def single_course(request, teacher_id, course_url):
     user_type = request.session.get("user_type")
@@ -1009,7 +1078,8 @@ def single_course(request, teacher_id, course_url):
     for cart in cartList:
         cartTotalSum += cart.course_id.price
 
-    favListShow, favCnt, alreadyinFavView, cartListShow, cartCnt, alreadyinCartView, cartTotalSum, noti_list, noti_cnt, msg_list, msg_cnt = findheader(request.user.id)
+    favListShow, favCnt, alreadyinFavView, cartListShow, cartCnt, alreadyinCartView, cartTotalSum, noti_list, noti_cnt, msg_list, msg_cnt = findheader(
+        request.user.id)
 
     teacher_id = Courses.objects.get(pk=id).user_id
 
@@ -1055,13 +1125,16 @@ def single_course(request, teacher_id, course_url):
     if student_cart_courses.objects.filter(student_id_id=user_id, course_id_id=course.id).exists():
         cart_exist = 1
     return render(request, 'single_course.html',
-                  {'videocount': videocounter, "lang": getLanguage(request)[0],'question_list': data['question_list'],
+                  {'videocount': videocounter, "lang": getLanguage(request)[0], 'question_list': data['question_list'],
                    'course': course, 'similar_courses': similar_courses, 'user_type': user_type, "user_id": user_id,
-                   "comment_list": obj_comment, 'id': id, 'user_info': user_info, 'free_course': free_course, 'teacher_id': teacher_id,
+                   "comment_list": obj_comment, 'id': id, 'user_info': user_info, 'free_course': free_course,
+                   'teacher_id': teacher_id,
                    'paid_course': paid_course, 'includeList': _obj, 'favList': favListShow, 'promo_video': promo_video,
                    'alreadyinFav': alreadyinFavView, 'cartListShow': cartListShow, 'alreadyinCart': alreadyinCartView,
                    'favCnt': len(favList), 'cartCnt': len(cartList), 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
-                   'noti_list': noti_list, 'is_me': is_me, 'fav_exist': fav_exist, 'cart_exist': cart_exist, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+                   'noti_list': noti_list, 'is_me': is_me, 'fav_exist': fav_exist, 'cart_exist': cart_exist,
+                   'msg_list': msg_list, 'msg_cnt': msg_cnt})
+
 
 @csrf_exempt
 def add_comment(request):
@@ -1213,6 +1286,7 @@ def student_Favourite_courses(request):
             student_favourite_courses.objects.filter(student_id_id=student_id, course_id_id=course_id).delete()
             return HttpResponse("success");
 
+
 @csrf_exempt
 def delete_Favourite_course_single(request):
     student_id = request.POST.get('student')
@@ -1231,6 +1305,7 @@ def delete_Favourite_course_single(request):
 
     return JsonResponse(data)
 
+
 @csrf_exempt
 def delete_Favourite_courses_all(request):
     student_id = request.POST.get('student')
@@ -1243,6 +1318,7 @@ def delete_Favourite_courses_all(request):
     data = {'favTotalSum': favTotalSum}
 
     return JsonResponse(data)
+
 
 def check_email(request):
     msg = ''
@@ -1265,6 +1341,7 @@ def check_email(request):
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
 
+
 def getsubcategory(request):
     msg = ''
     try:
@@ -1272,7 +1349,8 @@ def getsubcategory(request):
         subcat_list = []
         objC = subcategories.objects.filter(categories_id=int(category_id))
         for subcat in objC:
-            item = {'name': subcat.name, 'namear': subcat.namear, 'image': subcat.image, 'category_name': subcat.categories.name,
+            item = {'name': subcat.name, 'namear': subcat.namear, 'image': subcat.image,
+                    'category_name': subcat.categories.name,
                     'id': subcat.id}
             subcat_list.append(item)
         print(subcat_list)
@@ -1285,6 +1363,7 @@ def getsubcategory(request):
     to_return = {'msg': 'success', 'subcat_list': subcat_list}
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
+
 
 def saveimg(request):
     msg = ''
@@ -1310,6 +1389,7 @@ def saveimg(request):
     to_return = {'msg': msg}
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
+
 
 def register_user(request):
     msg = ''
@@ -1392,6 +1472,8 @@ def register_user(request):
     to_return = {'msg': msg}
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
+
+
 # Store updated profile in DB
 def updateUserProfile(data):
     user_id = data.user.id
@@ -1501,49 +1583,49 @@ def update_user(request):
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
 
-def sendConfirmationMail(objUA, domain, user_group_id, request):
 
-    connection = get_connection() # uses SMTP server specified in settings.py
-    connection.open() # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
+def sendConfirmationMail(objUA, domain, user_group_id, request):
+    connection = get_connection()  # uses SMTP server specified in settings.py
+    connection.open()  # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
 
     try:
         link = 'http://' + domain + '/activation?code=' + objUA.code
         text = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-        text +='<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
-        text +='<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
-        text +='<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
-        text +='@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
-        text +='@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
-        text +='.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
-        text +='.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
-        text +='<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
-        text +='<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-        text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
-        text +='<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
-        text +='</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>'
-        text +='<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-        text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
-        text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
-        text +='<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
-        text +='<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-        text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-        text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-        text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
-        text +='<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello ' + objUA.user.first_name + '</br>To activate your account please click button bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-        text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-        text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
-        text +='<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
-        text +='<a href="'+ link + '" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> A c t i v a t e </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
-        text +='<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-        text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->'
-        text +='<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
-        text +='<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
-        text +='<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
-        text +='<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
-        text +='<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
-        text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
-        text +='<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
-        text +='</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
+        text += '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
+        text += '<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
+        text += '<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
+        text += '@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
+        text += '@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
+        text += '.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
+        text += '.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
+        text += '<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
+        text += '<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+        text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
+        text += '<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
+        text += '</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>'
+        text += '<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+        text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
+        text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
+        text += '<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
+        text += '<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+        text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+        text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+        text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
+        text += '<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello ' + objUA.user.first_name + '</br>To activate your account please click button bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+        text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+        text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
+        text += '<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
+        text += '<a href="' + link + '" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> A c t i v a t e </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
+        text += '<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+        text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->'
+        text += '<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
+        text += '<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
+        text += '<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
+        text += '<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
+        text += '<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
+        text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
+        text += '<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
+        text += '</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
 
         to = objUA.email
 
@@ -1557,7 +1639,8 @@ def sendConfirmationMail(objUA, domain, user_group_id, request):
         msg = tbinfo + "\n" + ": " + str(sys.exc_info())
         msg = tbinfo + "\n" + ": " + str(sys.exc_info())
 
-    connection.close() # Cleanup
+    connection.close()  # Cleanup
+
 
 def activation(request):
     cod = request.GET.get('code')
@@ -1572,6 +1655,7 @@ def activation(request):
     user_object.save()
 
     return HttpResponseRedirect("/login")
+
 
 @csrf_exempt
 def ajaxlogin(request):
@@ -1618,6 +1702,7 @@ def ajaxlogin(request):
 
     return HttpResponse(serialized, content_type="application/json")
 
+
 def changepassword(request):
     msg = ''
     try:
@@ -1645,8 +1730,10 @@ def changepassword(request):
     serialized = json.dumps(to_return)
     return HttpResponse(serialized, content_type="application/json")
 
+
 def forgotpassword(request, param):
     return render(request, 'reset_password.html', {'lang': getLanguage(request)[0]})
+
 
 def forgotChangepassword(request):
     msg = ''
@@ -1662,11 +1749,13 @@ def forgotChangepassword(request):
         msg = tbinfo + "\n" + ": " + str(sys.exc_info())
     to_return = {'msg': msg}
     serialized = json.dumps(to_return)
-    return render(request, 'changesuccesspage.html', {'lang': getLanguage(request)[0], 'message':msg})
+    return render(request, 'changesuccesspage.html', {'lang': getLanguage(request)[0], 'message': msg})
+
 
 def logout_(request):
     logout(request)
     return HttpResponseRedirect('/')
+
 
 @csrf_exempt
 def search_course(request):
@@ -1760,6 +1849,8 @@ def search_course(request):
 
             rendered = render_to_string("filter_no_course.html", {"course": cod})
             return HttpResponse(rendered)
+
+
 ################## search engine 2
 @csrf_exempt
 def search_course2(request):
@@ -1817,6 +1908,7 @@ def search_course2(request):
         print("type", type(cod))
         return JsonResponse(response)
 
+
 def getRatingFunc(rating_list):
     sum = 0
     count = 0
@@ -1829,6 +1921,7 @@ def getRatingFunc(rating_list):
         _rating = sum / count
     return round(_rating, 1)
 
+
 def getVideoCnt(course):
     ssss = Sections.objects.filter(course_id=course.id).values_list("id", flat=True)
     ssss = map(str, ssss)
@@ -1836,12 +1929,14 @@ def getVideoCnt(course):
     videoListCnt = VideoUploads.objects.extra(where=['FIND_IN_SET(section_id, "' + strr + '")']).count()
     return videoListCnt
 
+
 def getVideoList(course):
     ssss = Sections.objects.filter(course_id=course.id).values_list("id", flat=True)
     ssss = map(str, ssss)
     strr = ','.join(ssss)
     videoList = VideoUploads.objects.extra(where=['FIND_IN_SET(section_id, "' + strr + '")'])
     return videoList
+
 
 def getVideoDuration(filename):
     ffprobepath = "ffprobe"
@@ -1854,6 +1949,7 @@ def getVideoDuration(filename):
     x = float(result.stdout)
     y = convertToTimeFormat(x)
     return y
+
 
 def convertToTimeFormat(seconds):
     seconds = seconds % (24 * 3600)
@@ -1874,6 +1970,7 @@ def convertToTimeFormat(seconds):
         show = str(hour) + "h " + str(minutes) + "m " + str(seconds) + "s"
     # return "%dh %02dm %02ds" % (hour, minutes, seconds)
     return show
+
 
 @csrf_exempt
 def sort_by_category(request):
@@ -2356,6 +2453,7 @@ def sort_by_category(request):
         else:
             return HttpResponse("error")
 
+
 def becomeTeacher(request):
     id = request.POST.get('id')
     cat_id = request.POST.get('cat_id')
@@ -2376,6 +2474,7 @@ def becomeTeacher(request):
         one.save()
     ret = {'msg': 'success'}
     return JsonResponse(ret)
+
 
 @csrf_exempt
 def searching(request):
@@ -2467,28 +2566,36 @@ def searching(request):
             # show notification...
             noti_list = notifications.objects.filter(user_id=user_id, is_read=0).order_by("-id")[:3]
             noti_cnt = notifications.objects.filter(user_id=user_id, is_read=0).count()
-            return render(request, 'search.html', {'searchstatus': searchstatus, 'lang': getLanguage(request)[0],'searchkeyword': searchkeyword,
+            return render(request, 'search.html', {'searchstatus': searchstatus, 'lang': getLanguage(request)[0],
+                                                   'searchkeyword': searchkeyword,
                                                    'totalsearchresult': totalsearchresult, "user_id": user_id,
                                                    "category_obj": category_obj, 'favList': favListShow,
                                                    'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
                                                    'alreadyinCart': alreadyinCartView, 'favCnt': len(favList),
                                                    'cartCnt': len(cartList), 'cartTotalSum': cartTotalSum,
-                                                   'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
+                                                   'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list,
+                                                   'msg_cnt': msg_cnt,
                                                    'course_list': course_list, 'course_free_list': course_free_list,
                                                    'course_paid_list': course_paid_list})
         else:
-            return render(request, 'search.html', {'searchstatus': searchstatus, 'lang': getLanguage(request)[0],'searchkeyword': searchkeyword,
+            return render(request, 'search.html', {'searchstatus': searchstatus, 'lang': getLanguage(request)[0],
+                                                   'searchkeyword': searchkeyword,
                                                    'totalsearchresult': totalsearchresult, "category_obj": category_obj,
                                                    'course_list': course_list, 'course_free_list': course_free_list,
                                                    'course_paid_list': course_paid_list, 'favList': favListShow,
-                                   'cartList': cartListShow, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt})
+                                                   'cartList': cartListShow, 'favCnt': favCnt, 'cartCnt': cartCnt,
+                                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                                   'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
 
     else:
         searchstatus = 0
-        return render(request, 'search.html', {'searchstatus': searchstatus,'lang': getLanguage(request)[0], 'searchkeyword': searchkeyword, 'favList': favListShow,
-                                   'cartList': cartListShow, 'favCnt': favCnt, 'cartCnt': cartCnt,
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt})
+        return render(request, 'search.html',
+                      {'searchstatus': searchstatus, 'lang': getLanguage(request)[0], 'searchkeyword': searchkeyword,
+                       'favList': favListShow,
+                       'cartList': cartListShow, 'favCnt': favCnt, 'cartCnt': cartCnt,
+                       'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list': msg_list,
+                       'msg_cnt': msg_cnt})
+
 
 def single_category(request, id):
     user_id = request.session.get("user_id")
@@ -2578,8 +2685,11 @@ def single_category(request, id):
         category = categories.objects.get(name=categorie)
     else:
         return render(request, 'filter_404_page.html', {'lang': getLanguage(request)[0], 'favList': favListShow,
-                                   'cartList': cartListShow, 'favCnt': len(favList), 'cartCnt': len(cartList),
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt, 'type': type, 'order':order})
+                                                        'cartList': cartListShow, 'favCnt': len(favList),
+                                                        'cartCnt': len(cartList),
+                                                        'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                                        'noti_list': noti_list, 'msg_list': msg_list,
+                                                        'msg_cnt': msg_cnt, 'type': type, 'order': order})
     if getLanguage(request)[1] == None:
         l = ""
     else:
@@ -2611,7 +2721,6 @@ def single_category(request, id):
                 elif order == 2:
                     course_list = sorted(course_list_tmp, key=attrgetter('stuCnt'))
 
-
                 course_list_paginator = Paginator(course_list, 10)
                 try:
                     course_list = course_list_paginator.page(page)
@@ -2627,26 +2736,40 @@ def single_category(request, id):
                     return render(request, 'single_category.html',
                                   {'lang': getLanguage(request)[0], 'course_list': course_list,
                                    "course_cnt": str(count), "course_name": categorie, "user_id": user_id,
-                                   'category': category, 'favList': favListShow,'alreadyinFav': alreadyinFavView, 'alreadyinCart': alreadyinCartView,
+                                   'category': category, 'favList': favListShow, 'alreadyinFav': alreadyinFavView,
+                                   'alreadyinCart': alreadyinCartView,
                                    'cartList': cartListShow, 'favCnt': len(favList), 'cartCnt': len(cartList),
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page':page, 'order':order})
+                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                   'msg_list': msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page': page,
+                                   'order': order})
 
                 else:
                     return render(request, 'single_category.html',
                                   {'lang': getLanguage(request)[0], 'course_list': course_list,
                                    "course_cnt": str(count), "course_name": categorie, "user_id": user_id,
-                                   'category': category, 'favList': favListShow,'alreadyinFav': alreadyinFavView, 'alreadyinCart': alreadyinCartView,
+                                   'category': category, 'favList': favListShow, 'alreadyinFav': alreadyinFavView,
+                                   'alreadyinCart': alreadyinCartView,
                                    'cartList': cartListShow, 'favCnt': len(favList), 'cartCnt': len(cartList),
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page':page, 'order':order})
+                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list,
+                                   'msg_list': msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page': page,
+                                   'order': order})
 
             else:
                 return render(request, 'filter_404_page.html', {'lang': getLanguage(request)[0], 'favList': favListShow,
-                                   'cartList': cartListShow, 'favCnt': len(favList), 'cartCnt': len(cartList),
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page':page, 'order':order})
+                                                                'cartList': cartListShow, 'favCnt': len(favList),
+                                                                'cartCnt': len(cartList),
+                                                                'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                                                'noti_list': noti_list, 'msg_list': msg_list,
+                                                                'msg_cnt': msg_cnt, 'type': type, 'page': page,
+                                                                'order': order})
     else:
         return render(request, 'filter_404_page.html', {'lang': getLanguage(request)[0], 'favList': favListShow,
-                                   'cartList': cartListShow, 'favCnt': len(favList), 'cartCnt': len(cartList),
-                                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'noti_list': noti_list, 'msg_list':msg_list, 'msg_cnt': msg_cnt, 'type': type, 'page':page, 'order':order})
+                                                        'cartList': cartListShow, 'favCnt': len(favList),
+                                                        'cartCnt': len(cartList),
+                                                        'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt,
+                                                        'noti_list': noti_list, 'msg_list': msg_list,
+                                                        'msg_cnt': msg_cnt, 'type': type, 'page': page, 'order': order})
+
 
 def getPromoData(request):
     course_id = request.POST.get('course_id')
@@ -2691,6 +2814,7 @@ def getPromoData(request):
     lender = render_to_string('video_modal.html',
                               {'course': course, 'user': request.user, 'studentCnt': len(myUserList), 'url': url})
     return JsonResponse({"lender": lender, "msg": "success"})
+
 
 @csrf_exempt
 def getCourseDetailForPromo(request):
@@ -2757,7 +2881,6 @@ def getCourseDetailForPromo(request):
 
 
 def showCartList(request):
-
     page = request.POST.get('page')
     if page == None or page == '':
         page = 1
@@ -2806,9 +2929,12 @@ def showCartList(request):
     x1, x2, x3, y1, y2, y3, y4, z1, z2, msg_list, msg_cnt = findheader(request.user.id)
 
     return render(request, 'cart.html',
-                  {'cartList': cartList,'lang': getLanguage(request)[0], 'favList': favListShow, 'cartListShow': cartListShow, 'favCnt': len(favListShow),
-                   'cartCnt': len(cartListShow), 'subtotal': subTotal, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'page': page, 'tax': tax,
+                  {'cartList': cartList, 'lang': getLanguage(request)[0], 'favList': favListShow,
+                   'cartListShow': cartListShow, 'favCnt': len(favListShow),
+                   'cartCnt': len(cartListShow), 'subtotal': subTotal, 'cartTotalSum': cartTotalSum,
+                   'noti_cnt': noti_cnt, 'page': page, 'tax': tax,
                    'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+
 
 ##### PAYMENT #####
 def ecommerce_cart(request):
@@ -2816,12 +2942,14 @@ def ecommerce_cart(request):
         return redirect('/')
     return render(request, 'ecommerce_cart.html', {'lang': getLanguage(request)[0]})
 
+
 def getcardinfo(request, id):
     cardid = request.POST.get('cardid')
     cardinfo = payment.objects.filter(id=cardid).all()
     cardinfodata = serializers.serialize('json', cardinfo)
     # cardinfo = serializers.serialize('json', cardinfoqueryset)
     return HttpResponse(cardinfodata, content_type='application/json')
+
 
 @csrf_exempt
 def ecommerce_payment(request, id, course_url):
@@ -2877,6 +3005,7 @@ def ecommerce_payment(request, id, course_url):
                        'noti_cnt': z2})
     else:
         return redirect("/")
+
 
 def makeInvoice(request):
     html = "<html><body>It is now </body></html>"
@@ -2952,9 +3081,11 @@ def makeInvoice(request):
 
     return HttpResponse(html)
 
+
 def generateRandomChar():
     x = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8))
     return x
+
 
 @csrf_exempt
 def checkout(request):
@@ -2978,9 +3109,11 @@ def checkout(request):
 def payment_done(request):
     return render(request, 'payment_done.html')
 
+
 @csrf_exempt
 def payment_canceled(request):
     return render(request, 'payment_cancelled.html')
+
 
 ##### PAYMENT ####
 
@@ -3012,6 +3145,7 @@ def checkdiscountcode(request):
     else:
         return HttpResponse("failed")
 
+
 @csrf_exempt
 def checkdiscountcodewithid(request, course_url):
     discount_code = request.POST.get('promoinput')
@@ -3033,6 +3167,7 @@ def checkdiscountcodewithid(request, course_url):
 
     else:
         return HttpResponse("failed")
+
 
 def showFavList(request):
     if request.session.get('user_id') == None:
@@ -3098,7 +3233,7 @@ def showFavList(request):
         if count == 0:
             fav.rating = 0
         else:
-            fav.rating = round(sum/count, 1)
+            fav.rating = round(sum / count, 1)
 
     wish_list_paginator = Paginator(favList, 2)
 
@@ -3110,9 +3245,11 @@ def showFavList(request):
         favList = wish_list_paginator.page(wish_list_paginator.num_pages)
 
     return render(request, 'wishlist.html',
-                  {'category_obj': category_obj,'lang': getLanguage(request)[0], 'favList': favList, 'cartList': cartListShow, 'favCnt': len(favList),
+                  {'category_obj': category_obj, 'lang': getLanguage(request)[0], 'favList': favList,
+                   'cartList': cartListShow, 'favCnt': len(favList),
                    'cartCnt': cartCnt, 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'page': page, 'type': type,
                    'noti_list': noti_list, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+
 
 def viewProfile(request, id):
     user = User.objects.get(pk=id)
@@ -3183,9 +3320,11 @@ def viewProfile(request, id):
     courseIDStr = map(str, coursesID)
     mystr = ','.join(courseIDStr)
     if order == 1:
-        review = course_comments.objects.extra(where=["find_in_set(course_id_id,'" + mystr + "')"]).filter(approved_by_teacher=1).order_by('date')
+        review = course_comments.objects.extra(where=["find_in_set(course_id_id,'" + mystr + "')"]).filter(
+            approved_by_teacher=1).order_by('date')
     else:
-        review = course_comments.objects.extra(where=["find_in_set(course_id_id,'" + mystr + "')"]).filter(approved_by_teacher=1).order_by('-date')
+        review = course_comments.objects.extra(where=["find_in_set(course_id_id,'" + mystr + "')"]).filter(
+            approved_by_teacher=1).order_by('-date')
 
     review_list_paginator = Paginator(review, 4)
     try:
@@ -3213,9 +3352,12 @@ def viewProfile(request, id):
     user.reviewCnt = count
     print("test::", user.profile.header_img)
     return render(request, 'profile.html',
-                  {'teacher': user, 'favList': favListShow, 'lang': getLanguage(request)[0], 'cartList': cartListShow, 'favCnt': len(favList),
-                   'cartCnt': len(cartList), 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'page': page, 'page1': page1,
+                  {'teacher': user, 'favList': favListShow, 'lang': getLanguage(request)[0], 'cartList': cartListShow,
+                   'favCnt': len(favList),
+                   'cartCnt': len(cartList), 'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt, 'page': page,
+                   'page1': page1,
                    'noti_list': noti_list, 'order': order, 'tab': tab, 'msg_list': msg_list, 'msg_cnt': msg_cnt})
+
 
 def teacherProfile(request):
     id = request.POST.get('id')
@@ -3225,6 +3367,7 @@ def teacherProfile(request):
         user.profile = profile
     return render(request, 'teacherProfile.html', {'user': user})
 
+
 def deleteAccount(request):
     user_id = request.POST.get('id')
 
@@ -3232,53 +3375,55 @@ def deleteAccount(request):
 
     return JsonResponse({'msg': 'success'})
 
+
 def deleteCourse(request):
     course_id = request.POST.get("id")
     deletec = Courses.objects.get(pk=course_id).delete()
     return JsonResponse({'msg': 'success'})
 
+
 def sendResetPasswordEmail(request):
     email = request.POST.get('email')
 
-    connection = get_connection() # uses SMTP server specified in settings.py
-    connection.open() # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
+    connection = get_connection()  # uses SMTP server specified in settings.py
+    connection.open()  # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
 
     text = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-    text +='<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
-    text +='<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
-    text +='<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
-    text +='@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
-    text +='@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
-    text +='.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
-    text +='.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
-    text +='<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
-    text +='<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-    text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
-    text +='<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
-    text +='</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>' 
-    text +='<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-    text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
-    text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
-    text +='<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
-    text +='<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-    text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-    text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-    text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
-    text +='<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello  </br>To reset you password, pls click the link. bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-    text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-    text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
-    text +='<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
-    text +='<a href="+ link + " target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> Reset &nbsp;&nbsp; password </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
-    text +='<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-    text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->' 
-    text +='<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
-    text +='<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
-    text +='<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
-    text +='<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
-    text +='<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
-    text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
-    text +='<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
-    text +='</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
+    text += '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
+    text += '<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
+    text += '<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
+    text += '@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
+    text += '@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
+    text += '.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
+    text += '.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
+    text += '<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
+    text += '<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+    text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
+    text += '<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
+    text += '</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>'
+    text += '<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+    text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
+    text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
+    text += '<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
+    text += '<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+    text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+    text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+    text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
+    text += '<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello  </br>To reset you password, pls click the link. bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+    text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+    text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
+    text += '<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
+    text += '<a href="+ link + " target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> Reset &nbsp;&nbsp; password </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
+    text += '<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+    text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->'
+    text += '<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
+    text += '<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
+    text += '<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
+    text += '<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
+    text += '<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
+    text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
+    text += '<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
+    text += '</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
 
     to = email
     subject = 'Thanks :)'
@@ -3286,8 +3431,9 @@ def sendResetPasswordEmail(request):
     msg = EmailMultiAlternatives(subject, '...', 'daoatkhaiteaiso@gmail.com', [to])
     msg.attach_alternative(text, "text/html")
     msg.send()
-    connection.close() # Cleanup
+    connection.close()  # Cleanup
     return HttpResponse("success")
+
 
 def resetPassword(request):
     msg = ''
@@ -3296,62 +3442,62 @@ def resetPassword(request):
     hashString = str(hashval.hexdigest())
     lang = getLanguage(request)[0]
     if lang == 'ar/':
-        link = settings.BASE_URL + "/" + lang + "forgot_password/?param=" + hashString    
+        link = settings.BASE_URL + "/" + lang + "forgot_password/?param=" + hashString
     else:
-        link = settings.BASE_URL + "/en/forgot_password/?param=" + hashString    
+        link = settings.BASE_URL + "/en/forgot_password/?param=" + hashString
     print("lang link ----------------------------------------------------------------------------- ", link)
     try:
         obj = User.objects.get(email=email)
-        if obj is not None:             
+        if obj is not None:
             obj.hash = hashString
             obj.save()
 
-            connection = get_connection() # uses SMTP server specified in settings.py
-            connection.open() # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
+            connection = get_connection()  # uses SMTP server specified in settings.py
+            connection.open()  # If you don't open the connection manually, Django will automatically open, then tear down the connection in msg.send()
 
             text = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-            text +='<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
-            text +='<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
-            text +='<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
-            text +='@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
-            text +='@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
-            text +='.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
-            text +='.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
-            text +='<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
-            text +='<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-            text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
-            text +='<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
-            text +='</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>' 
-            text +='<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-            text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
-            text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
-            text +='<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
-            text +='<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-            text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-            text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
-            text +='<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
-            text +='<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello  </br>To reset you password, pls click the link. bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-            text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
-            text +='<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
-            text +='<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
-            text +='<a href="'+ link + '" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> Reset &nbsp;&nbsp; password </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
-            text +='<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
-            text +='<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->' 
-            text +='<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
-            text +='<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
-            text +='<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
-            text +='<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
-            text +='<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
-            text +='<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
-            text +='<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
-            text +='</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
+            text += '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">'
+            text += '<head><!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="x-apple-disable-message-reformatting"><!--[if !mso]><!-->'
+            text += '<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><style type="text/css">table, td { color: #000000; } a { color: #0000ee; text-decoration: underline; } @media (max-width: 480px) { #u_content_button_4 .v-padding { padding: 20px 50px !important; } }'
+            text += '@media only screen and (min-width: 620px) {.u-row { width: 600px !important;}.u-row .u-col {vertical-align: top;}.u-row .u-col-100 {width: 600px !important;}}'
+            text += '@media (max-width: 620px) {.u-row-container {max-width: 100% !important;padding-left: 0px !important;padding-right: 0px !important;}.u-row .u-col {min-width: 320px !important;max-width: 100% !important;display: block !important;}'
+            text += '.u-row {width: calc(100% - 40px) !important;}.u-col {width: 100% !important;}.u-col > div {margin: 0 auto;}}body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}p {margin: 0;}'
+            text += '.ie-container table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors="true"] {color: inherit !important;text-decoration: none !important;}</style>'
+            text += '<!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css"><link href="https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]--></head>'
+            text += '<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #efefef;color: #000000"><!--[if IE]><div class="ie-container"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #efefef;width:100%" cellpadding="0" cellspacing="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #efefef;"><![endif]--><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color:   #d7dbf5;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #0000ff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+            text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><table width="100%" cellpadding="0" cellspacing="0" border="0" ><tr>'
+            text += '<td style="padding-right: 0px;padding-left: 0px;" align="center"><img align="center" border="0" src="images/image-1.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 80px;" width="80">'
+            text += '</td></tr></table></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div>'
+            text += '<div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+            text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" >'
+            text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 12px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 140%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 140%;">'
+            text += '<span style="font-size: 22px; line-height: 30.8px;"><strong>Thank you for signup in Booctep</strong></span></p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent">'
+            text += '<div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+            text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+            text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->'
+            text += '<table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" ><tbody><tr>'
+            text += '<td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #333333; line-height: 160%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 160%; text-align: left;">Hello  </br>To reset you password, pls click the link. bellow</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+            text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]-->'
+            text += '<!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->'
+            text += '<div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]--><table id="u_content_button_4" style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div align="center"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:Open Sans,sans-serif;"><tr><td style="font-family:Open Sans,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:38px; v-text-anchor:middle; width:274px;" arcsize="92%" stroke="f" fillcolor="#1b36ab"><w:anchorlock/><center style="color:#FFFFFF;font-family:Open Sans,sans-serif;"><![endif]-->'
+            text += '<a href="' + link + '" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:Open Sans,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1b36ab; border-radius: 35px; -webkit-border-radius: 35px; -moz-border-radius: 35px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"><span class="v-padding" style="display:block;padding:12px 40px 10px;line-height:120%;"><span style="font-size: 14px; line-height: 16.8px;"><strong><span style="line-height: 16.8px; font-size: 14px;"> Reset &nbsp;&nbsp; password </span></strong></span></span></a><!--[if mso]></center></v:roundrect></td></tr></table><![endif]--></div></td></tr></tbody></table>'
+            text += '<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><div class="u-row-container" style="padding: 0px;background-color: transparent"><div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;"><div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">'
+            text += '<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px;"><tr style="background-color: #ffffff;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="600" style="width: 600px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]--><div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;"><div style="width: 100% !important;"><!--[if (!mso)&(!IE)]><!-->'
+            text += '<div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">'
+            text += '<!--<![endif]--><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 9px;font-family:Open Sans,sans-serif;" align="left">'
+            text += '<table height="0px" align="center" border="0" cellpadding="0" cellspacing="0" width="72%" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;border-top: 1px solid #413d45;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%"><tbody><tr style="vertical-align: top">'
+            text += '<td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;font-size: 0px;line-height: 0px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%">'
+            text += '<span>&#160;</span></td></tr></tbody></table></td></tr></tbody></table><table style="font-family:Open Sans,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">'
+            text += '<tbody><tr><td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Open Sans,sans-serif;" align="left"><div style="color: #7e7e81; line-height: 150%; text-align: center; word-wrap: break-word;"><p style="font-size: 14px; line-height: 150%;">'
+            text += '<span style="font-size: 12px; line-height: 18px;">You have received this email as a registered user of Booctep.com</span><span style="font-size: 12px; line-height: 18px;"></span>'
+            text += '</p></div></td></tr></tbody></table><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td><![endif]--><!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]--></div></div></div><!--[if (mso)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso]></div><![endif]--><!--[if IE]></div><![endif]--></body></html>'
 
             to = email
             subject = 'Thanks :)'
 
             msg = EmailMultiAlternatives(subject, '...', 'daoatkhaiteaiso@gmail.com', [to])
             msg.attach_alternative(text, "text/html")
-            msg.send()         
+            msg.send()
 
         else:
             msg = 'error'
@@ -3361,8 +3507,9 @@ def resetPassword(request):
         tbinfo = traceback.format_tb(tb)[0]
         msg = tbinfo + "\n" + ": " + str(sys.exc_info())
         hashString = "0"
-        
+
     return render(request, 'resetpassword.html', {'lang': getLanguage(request)[0]})
+
 
 def postResetPassword(request):
     email = request.POST.get('email')
@@ -3375,14 +3522,19 @@ def postResetPassword(request):
     }
     return JsonResponse(ret)
 
+
 def enrollment(request, course_id):
     course = Courses.objects.get(pk=course_id)
     similar_course = Courses.objects.filter(scat_id=course.scat_id).filter(~Q(id=course.id))
     favListShow, favCnt, alreadyinFavView, cartListShow, cartCnt, alreadyinCartView, cartTotalSum, noti_list, noti_cnt, msg_list, msg_cnt = findheader(
         request.user.id)
-    return render(request, 'enrollment.html', {'course': course, 'similar_courses': similar_course, 'favList': favListShow, 'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
-                           'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt, 'msg_list': msg_list, 'msg_cnt': msg_cnt,
-                           'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt})
+    return render(request, 'enrollment.html',
+                  {'course': course, 'similar_courses': similar_course, 'favList': favListShow,
+                   'alreadyinFav': alreadyinFavView, 'cartList': cartListShow,
+                   'alreadyinCart': alreadyinCartView, 'favCnt': favCnt, 'cartCnt': cartCnt, 'msg_list': msg_list,
+                   'msg_cnt': msg_cnt,
+                   'cartTotalSum': cartTotalSum, 'noti_cnt': noti_cnt})
+
 
 @csrf_exempt
 def searchCourseName(request):
@@ -3392,6 +3544,7 @@ def searchCourseName(request):
         'courses': serializers.serialize('json', courses)
     }
     return JsonResponse(ret)
+
 
 @csrf_exempt
 def saveCardInfo(request):
@@ -3423,6 +3576,7 @@ def saveCardInfo(request):
     }
     return JsonResponse(ret)
 
+
 @csrf_exempt
 def setPrivacy(request):
     user_id = request.POST.get('user_id')
@@ -3445,6 +3599,7 @@ def setPrivacy(request):
     }
     return JsonResponse(ret)
 
+
 @csrf_exempt
 def deleteCourseById(request):
     id = request.POST.get('course')
@@ -3458,6 +3613,7 @@ def deleteCourseById(request):
         'status': status
     }
     return JsonResponse(ret)
+
 
 @csrf_exempt
 def sendTransferRequest(request):
@@ -3476,6 +3632,7 @@ def sendTransferRequest(request):
     }
     return JsonResponse(ret)
 
+
 @csrf_exempt
 def checkPayoutStatus(request):
     teacher_id = request.POST.get('teacher')
@@ -3489,6 +3646,7 @@ def checkPayoutStatus(request):
         'status': status
     }
     return JsonResponse(ret)
+
 
 def handler404(request, exception):
     return render(request, 'filter_404_page.html')

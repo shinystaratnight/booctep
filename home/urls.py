@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^search_course/$', search_course, name='search_course'),
     url(r'^search_course2/$', search_course2, name='search_course2'),
 	url(r'^student_courses/$', student_courses, name='student_courses'),
-    
+
 	url(r'^student_Cart_courses/$', student_Cart_courses, name='student_Cart_courses'),
     url(r'^delete_Cart_course_single/$', delete_Cart_course_single, name='delete_Cart_course_single'),
     url(r'^delete_Cart_courses_all/$', delete_Cart_courses_all, name='delete Cart courses all'),
@@ -64,11 +64,13 @@ urlpatterns = [
     url(r'^delete_message_history/$', deleteMessageHistory, name='delete message history'),
     url(r'^set_message_read/$', setMessageRead, name='set message read'),
     url(r'^get_user_by_id/$', getUserById, name='get user by id'),
+    url(r'^set_message_read_by_id/$', setMessageReadById, name='set_message_read_by_id'),
 
     #notification part
     url(r'^delete_notification_by_id/$', deleteNotificationById, name='delete notification by id'),
     url(r'^delete_notification/$', deleteNotification, name='delete notification'),
     url(r'^edit_notification/$', editNotification, name='edit notification'),
+    url(r'^set_notification_read_by_id/$', setNotificationReadById, name='set_notification_read_by_id'),
 
     #spam & refund part
     url(r'^report_spam/$', reportSpam, name='report spam'),
