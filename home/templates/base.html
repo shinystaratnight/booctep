@@ -383,10 +383,18 @@ Page loader
       {% endblock %}
 
       <!-- Sweet Alert -->
-      <link
-        rel="stylesheet"
-        href="{% static 'video/assets/css/sweetalert.css' %}"
-      />
+        {% if lang == 'ar/' %}
+          <link
+            rel="stylesheet"
+            href="{% static 'video/assets/css/sweetalert.rtl.css' %}"
+          />
+        {% else %}
+          <link
+            rel="stylesheet"
+            href="{% static 'video/assets/css/sweetalert.css' %}"
+          />
+        {% endif %}
+
       <link
         type="text/css"
         href="/static/{{ lang }}student/assets/vendor/toastr.min.css"
