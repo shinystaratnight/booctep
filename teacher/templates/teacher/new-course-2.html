@@ -574,27 +574,7 @@
             videoList.splice(idx, idx + 1)
         }
 
-        const setPromoChange = (obj) => {
-            let flag = true;
-            let value = $(obj).val()
-            videoList.forEach((ele) => {
-                if (ele.isPromo == 1 && value * 1 == 1) {
-                    swal({
-                        title: "You must select One Promo video",
-                        closeOnConfirm: false,
-                    });
-                    flag = false;
-                }
-            })
-            if (flag == false) {
-                $(obj).val(0);
-                return;
-            }
-            let key = $(obj).attr('id').split('-')[1] * 1
-            if (flag == true) {
-                videoList[key].isPromo = $(obj).val() * 1;
-            }
-        }
+
 
         // get last children's id
         const getLastChildrenID = (element) => {
@@ -839,10 +819,7 @@
                     <span class="material-icons icon-16pt icon--left text-body">play_circle_outline</span>
                     <a class="flex">` + videoname + `</a>
                     <span>` + duration + ` mins</span>
-                    <select class="form-control" onchange="setPromoChange(this)" id="` + video.key.toString() + `" style="width: 100px; margin-left: 10px;">
-                        <option value="0">None</option>
-                        <option value="1">Promo</option>
-                    </select>
+
                     <span style="margin-left:10px; cursor: pointer;" class="material-icons sidebar-menu-icon sidebar-menu-icon--left" onclick="deleteVideo(this)">delete</span>
                 </li>
                 `;
@@ -911,7 +888,7 @@
             })
             var form_data = new FormData;
             videoList.forEach((video, key) => {
-                video.promo = $('#' + video.key).val();
+                video.promo = 0;
                 form_data.append(video.key, video);
                 console.log("here here", form_data)
                 console.log("here here", video.key)
@@ -959,7 +936,7 @@
             })
             var form_data = new FormData;
             videoList.forEach((video, key) => {
-                video.promo = $('#' + video.key).val();
+                video.promo = 0;
                 form_data.append(video.key, video);
             });
             course_id = localStorage.getItem('course_id')

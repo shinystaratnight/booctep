@@ -886,6 +886,7 @@ def store_course_2(request):
         section_list = data.get("section_list")
         section_list = json.loads(section_list)
         json_video_list = json.loads(data.get("video_list"))
+        json_video_list[0]['isPromo'] = 1
 
         if (len(json_video_list) > 0):
             ## store section in DB
@@ -958,8 +959,8 @@ def store_course_2(request):
                         ele.delete()
 
                 for item in json_video_list:
-                    print("compare::", item['sectionId'])
-                    print("compare::", tag_id)
+                    # print("compare::", item['sectionId'])
+                    # print("compare::", tag_id)
                     if (int(item['sectionId']) == int(tag_id)):
                         ## upload video
                         video_key = item['key']
@@ -972,6 +973,25 @@ def store_course_2(request):
                             ext = filename[filename.rfind('.'):]
                             file_name = str(uuid.uuid4()) + ext
 
+                            if item['isPromo'] == 1:
+                                path = '/uploads/courses/videos/'
+                                full_path = str(path) + str(file_name)
+                                fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
+
+                                for chunk in video.chunks():
+                                    fd.write(chunk)
+                                fd.close()
+
+                                objVideo = VideoUploads(
+                                    name=filename,
+                                    section_id=section_id,
+                                    url=full_path,
+                                    promo=item['isPromo'],
+                                    duration=item['duration'],
+                                    lock=0
+                                )
+                                objVideo.save()
+
                             ## Uploading videos into Vimeo space instead of server
                             VIMEO_TOKEN = settings.VIMEO_TOKEN
                             VIMEO_KEY = settings.VIMEO_KEY
@@ -982,7 +1002,8 @@ def store_course_2(request):
                                 key=VIMEO_KEY,
                                 secret=VIMEO_SECRET
                             )
-                            uri = client.upload(filename, data={
+                            print(video.file.name)
+                            uri = client.upload(video.file.name, data={
                                 'name': file_name,
                                 'description': 'description: ' + file_name
                             })
@@ -990,25 +1011,27 @@ def store_course_2(request):
                             response = client.get(uri + '?fields=link').json()
                             full_path = response['link']
 
-                            # path = '/uploads/courses/videos/'
-                            # full_path = str(path) + str(file_name)
-                            # print("store course", full_path)
-                            # print("store course1", (settings.STATICFILES_DIRS[0], str(path) + str(file_name)))
-                            # fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
-                            #
-                            # for chunk in video.chunks():
-                            #     fd.write(chunk)
-                            # fd.close()
-
                             ## store video in DB
-                            objVideo = VideoUploads(
-                                name=filename,
-                                section_id=section_id,
-                                url=full_path,
-                                promo=item['isPromo'],
-                                duration=item['duration']
-                            )
-                            objVideo.save()
+                            objVideo = None
+                            if course.price == 0.0:
+                                objVideo = VideoUploads(
+                                    name=filename,
+                                    section_id=section_id,
+                                    url=full_path,
+                                    promo=0,
+                                    duration=item['duration'],
+                                    lock=0
+                                )
+                            else:
+                                objVideo = VideoUploads(
+                                    name=filename,
+                                    section_id=section_id,
+                                    url=full_path,
+                                    promo=0,
+                                    duration=item['duration']
+                                )
+                            if item['isPromo'] == 0:
+                                objVideo.save()
 
             msg = "success"
         else:
