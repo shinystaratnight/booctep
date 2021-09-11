@@ -45,7 +45,8 @@ urlpatterns = [
 
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
-    # url('', include('discount.urls')), 
+    # url('', include('discount.urls')),
+    url(r'^i18n/', include(i18n)),
 ]
 
 # handler404 = 'view_404'
