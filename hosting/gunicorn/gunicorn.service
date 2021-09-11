@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=elzubair
+Group=www-data
+WorkingDirectory=/home/elzubair/booctep_new
+ExecStart=/home/elzubair/booctep_new/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock booctop.wsgi:application
+[Install]
+WantedBy=multi-user.target
