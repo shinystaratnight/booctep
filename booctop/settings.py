@@ -206,7 +206,7 @@ MULTILINGUAL_LANGUAGES = (
 STATIC_ROOT = os.path.join(BASE_DIR, "booctop/statics")
 
 STATIC_URL = '/static/'
-BASE_URL = 'http://127.0.0.1:8000'
+BASE_URL = 'https://booctep.com'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "booctop/static"),
 )
