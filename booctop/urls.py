@@ -104,6 +104,7 @@ urlpatterns += i18n.i18n_patterns(
     
     url(r'^logoutfromhere/$', logout_, name='logout'),
     url(r'^activation/$', activation, name='activation'),
+    url(r'^activated/$', activated, name='activated'),
     url(r'^options-settings/$', options_settings, name='options settings'),
 
     # TEACHER

@@ -1461,6 +1461,7 @@ def register_user(request):
                 objUS.user = objUser
                 objUS.category = objSubCat
                 objUS.save()
+            request.session['password'] = password
             domain = request.META['HTTP_HOST']
             msg = 'success'
             sendConfirmationMail(objUA, domain, user_group_id, request)
@@ -1642,6 +1643,9 @@ def sendConfirmationMail(objUA, domain, user_group_id, request):
     connection.close()  # Cleanup
 
 
+def activated(request):
+    return render(request, 'activated.html', {'lang': getLanguage(request)[0]})
+
 def activation(request):
     cod = request.GET.get('code')
     lenobj = user_activation.objects.get(code=cod)
@@ -1651,10 +1655,15 @@ def activation(request):
     user_object = User.objects.get(id=user_id)
 
     user_object.is_active = True
-
     user_object.save()
 
-    return HttpResponseRedirect("/" + request.LANGUAGE_CODE + "/login")
+    email = user_object.email
+    password = request.session['password']
+
+    objU = authenticate(email=email, password=password)
+    login(request, objU)
+
+    return HttpResponseRedirect("/" + request.LANGUAGE_CODE + "/activated")
 
 
 @csrf_exempt
