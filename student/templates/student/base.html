@@ -175,10 +175,10 @@
 <script src="/static/{{ lang }}student/assets/js/app.js"></script>
 <!-- Sidebar Mini JS -->
 <script src="/static/{{ lang }}student/assets/js/sidebar-mini.js"></script>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="http://64.225.57.205:3000/socket.io/socket.io.js"></script>
 <script>
 
-    var socket = io.connect("http://localhost:3000")
+    var socket = io.connect("http://64.225.57.205:3000")
     var user_id = '{{ request.user.id }}';
     var user_role = '{{ request.user.group_id }}';
     socket.on('send_noti_to_student_all_reply', (data) => {
