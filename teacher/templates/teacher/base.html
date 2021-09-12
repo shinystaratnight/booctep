@@ -647,7 +647,7 @@
         })
     }
 
-    var socket = io.connect("http://127.0.0.1:3000")
+    var socket = io.connect("http://localhost:3000")
     var user_id = '{{ request.user.id }}';
     var user_role = '{{ request.user.group_id }}';
     socket.on('course_noti_from_admin', (data) => {
