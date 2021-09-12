@@ -310,8 +310,8 @@ def student_messages(request):
                             teacher_dict["unread"] = 0
                         else:
                             teacher_dict["unread"] = 1
-                teacher_list.append(teacher_dict)
-                teacher_dict = {}
+                    teacher_list.append(teacher_dict)
+                    teacher_dict = {}
         print("test::", teacher_list)
         return render(request, 'student/messages.html',
                       {'lang': getLanguage(request)[0], "teacher_list": teacher_list, "user_id": user_id,
