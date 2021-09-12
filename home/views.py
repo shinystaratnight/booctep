@@ -1654,7 +1654,7 @@ def activation(request):
 
     user_object.save()
 
-    return HttpResponseRedirect("/login")
+    return HttpResponseRedirect("/" + request.LANGUAGE_CODE + "/login")
 
 
 @csrf_exempt
