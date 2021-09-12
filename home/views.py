@@ -3647,6 +3647,6 @@ def checkPayoutStatus(request):
     }
     return JsonResponse(ret)
 
-
-def handler404(request, exception):
-    return render(request, 'filter_404_page.html')
+#
+# def handler404(request, exception):
+#     return render(request, 'filter_404_page.html')
