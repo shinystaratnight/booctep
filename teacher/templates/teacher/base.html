@@ -606,7 +606,7 @@
 </body>
 
 </html>
-<script src="/websockets/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     
 
@@ -647,7 +647,7 @@
         })
     }
 
-    var socket = io.connect("https://booctep.com/websockets")
+    var socket = io.connect("https://booctep.com")
     var user_id = '{{ request.user.id }}';
     var user_role = '{{ request.user.group_id }}';
     socket.on('course_noti_from_admin', (data) => {
