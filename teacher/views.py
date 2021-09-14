@@ -974,66 +974,25 @@ def store_course_2(request):
                             filename = video._get_name()
                             ext = filename[filename.rfind('.'):]
                             file_name = str(uuid.uuid4()) + ext
+                            path = '/uploads/courses/videos/'
+                            full_path = str(path) + str(file_name)
+                            fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
 
-                            if item['isPromo'] == 1:
-                                path = '/uploads/courses/videos/'
-                                full_path = str(path) + str(file_name)
-                                fd = open('%s/%s' % (settings.STATICFILES_DIRS[0], str(path) + str(file_name)), 'wb')
-
-                                for chunk in video.chunks():
-                                    fd.write(chunk)
-                                fd.close()
-
-                                objVideo = VideoUploads(
-                                    name=filename,
-                                    section_id=section_id,
-                                    url=full_path,
-                                    promo=item['isPromo'],
-                                    duration=item['duration'],
-                                    lock=0
-                                )
-                                objVideo.save()
-
-                            ## Uploading videos into Vimeo space instead of server
-                            VIMEO_TOKEN = settings.VIMEO_TOKEN
-                            VIMEO_KEY = settings.VIMEO_KEY
-                            VIMEO_SECRET = settings.VIMEO_SECRET
-
-                            client = vimeo.VimeoClient(
-                                token=VIMEO_TOKEN,
-                                key=VIMEO_KEY,
-                                secret=VIMEO_SECRET
-                            )
-                            print(video.file.name)
-                            uri = client.upload(video.file.name, data={
-                                'name': file_name,
-                                'description': 'description: ' + file_name
-                            })
-
-                            response = client.get(uri + '?fields=link').json()
-                            full_path = response['link']
+                            for chunk in video.chunks():
+                                fd.write(chunk)
+                            fd.close()
 
                             ## store video in DB
-                            objVideo = None
-                            if course.price == 0.0:
-                                objVideo = VideoUploads(
-                                    name=filename,
-                                    section_id=section_id,
-                                    url=full_path,
-                                    promo=0,
-                                    duration=item['duration'],
-                                    lock=0
-                                )
-                            else:
-                                objVideo = VideoUploads(
-                                    name=filename,
-                                    section_id=section_id,
-                                    url=full_path,
-                                    promo=0,
-                                    duration=item['duration']
-                                )
-                            if item['isPromo'] == 0:
-                                objVideo.save()
+                            objVideo = VideoUploads(
+                                name=filename,
+                                section_id=section_id,
+                                url=full_path,
+                                promo=item['isPromo'],
+                                duration=item['duration']
+                            )
+                            if item['isPromo'] == 1 or course.price == 0.0:
+                                objVideo.lock = 0
+                            objVideo.save()
 
             msg = "success"
         else:
