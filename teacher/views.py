@@ -132,14 +132,14 @@ def dashboard(request):
     totalPrice = 0
 
     # get total student for free course
-    free_course_list = Courses.objects.filter(user_id=user_id, type=1).values_list('id', flat=True)
+    free_course_list = Courses.objects.filter(user_id=user_id, type=1, approval_status=2).values_list('id', flat=True)
     free_course_list = map(str, free_course_list)
     free_course_id_str = ','.join(free_course_list)
     totalFreeStuCnt = student_register_courses.objects.extra(
         where=['find_in_set(course_id_id, "' + free_course_id_str + '")']).count()
 
     # get total student for paid course
-    paid_course_list = Courses.objects.filter(user_id=user_id, type=0).values_list('id', flat=True)
+    paid_course_list = Courses.objects.filter(user_id=user_id, type=0, approval_status=2).values_list('id', flat=True)
     paid_course_list = map(str, paid_course_list)
     paid_course_id_str = ','.join(paid_course_list)
     totalPaidStuCnt = student_register_courses.objects.extra(
@@ -161,7 +161,7 @@ def dashboard(request):
 
     # get total revenue
     total_revenue = 0
-    course_list = Courses.objects.filter(user_id=user_id, type=0)
+    course_list = Courses.objects.filter(user_id=user_id, type=0, approval_status=2)
     total_hold_money = 0
     total_transfer_money = 0
 
