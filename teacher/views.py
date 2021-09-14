@@ -246,7 +246,7 @@ def teacher_courses(request):
         course_list = Courses.objects.filter(user_id=user_id, type=filter_type).filter(approval_status=2)
         filter_type = int(filter_type)
     for course in course_list:
-        course.progress = course.pending * 100 / 4
+        course.progress = str(course.pending * 100 / 4)
         print("progress:::", course.progress)
 
     return render(request, 'teacher/courses.html', {'lang': getLanguage(request)[0], 'course_list': course_list,
