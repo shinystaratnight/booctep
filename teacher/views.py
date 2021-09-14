@@ -1082,6 +1082,21 @@ def save_later_2(request):
     return HttpResponse(serialized, content_type="application/json")
 
 
+def save_later_4(request):
+    course_id = request.POST.get('course_id')
+    course = Courses.objects.get(pk=course_id)
+    course.pending = 4
+    course.save()
+
+    msg = 'success'
+    to_return = {
+        'msg': msg,
+    }
+
+    serialized = json.dumps(to_return)
+    return HttpResponse(serialized, content_type="application/json")
+
+
 # store questions in DB
 def store_course_3(request):
     msg = ''

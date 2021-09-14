@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^store-course_4/$', store_course_4, name="store course4"),
     url(r'^save_later/$', save_later, name="store course"),
     url(r'^save_later_2/$', save_later_2, name="store course"),
+    url(r'^save_later_4/$', save_later_4, name="store-course-4"),
 
 ]
