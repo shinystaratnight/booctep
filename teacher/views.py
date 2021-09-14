@@ -548,6 +548,8 @@ def add_course(request):
 
 
 def test_video(request):
+    if request.session.get('user_id') == None:
+        return redirect('/')
     return render(request, 'teacher/test_video.html')
 
 
