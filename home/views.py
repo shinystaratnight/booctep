@@ -194,9 +194,11 @@ def home_view(request):
 
     course_list_tmp = course_list
     if order == 1:
-        course_list = sorted(course_list_tmp, key=attrgetter('rating'))
+        course_list = sorted(course_list_tmp, key=attrgetter('rating'), reverse=True)
     elif order == 2:
-        course_list = sorted(course_list_tmp, key=attrgetter('student_num'))
+        course_list = sorted(course_list_tmp, key=attrgetter('student_num'), reverse=True)
+    elif order == 3:
+        course_list = sorted(course_list_tmp, key=attrgetter('created_at'), reverse=True)
     request.session[LANGUAGE_SESSION_KEY] = 'ar'
     print("check my abilty:::::", getLanguage(request)[1])
 
